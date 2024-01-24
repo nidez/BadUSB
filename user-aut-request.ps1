@@ -57,8 +57,8 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
             $form = $null
         }
         else{
-            $userlogin = $cred.GetNetworkCredential().username | fl
-	    $passlogin = $cred.GetNetworkCredential().password | fl
+            $userlogin = $cred.username
+	    $passlogin = $cred.GetNetworkCredential().password
         }
     }
 
